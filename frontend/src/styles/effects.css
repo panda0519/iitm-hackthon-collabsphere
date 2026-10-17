@@ -1,0 +1,132 @@
+/* ===== Spatial UI: frosted glass windows floating in a lit environment ===== */
+
+/* environment: soft light orbs that drift and parallax with the pointer */
+.aurora{position:fixed;inset:-4vmax;z-index:0;pointer-events:none;overflow:hidden;transform:translate3d(calc(var(--px,0) * -26px),calc(var(--py,0) * -20px),0);transition:transform .5s ease-out}
+.aurora i{position:absolute;width:58vmax;height:58vmax;border-radius:9999px;opacity:var(--orb);filter:blur(70px);background:radial-gradient(circle,var(--c) 0%,transparent 64%);animation:drift 32s ease-in-out infinite alternate;will-change:transform}
+.aurora i:nth-child(1){--c:#4a74ff;top:-24vmax;left:-12vmax}
+.aurora i:nth-child(2){--c:#b25cff;top:6vmax;right:-26vmax;animation-delay:-11s}
+.aurora i:nth-child(3){--c:#17c3b2;bottom:-34vmax;left:14vmax;opacity:calc(var(--orb) * .7);animation-delay:-20s}
+@keyframes drift{to{transform:translate3d(5vmax,4vmax,0) scale(1.1)}}
+
+/* glass windows: every panel, rail, header and overlay */
+html [class*="bg-s1/"],html .glass,html .win,html .neon,html .neon-anim{
+  background-color:var(--glass);
+  background-image:radial-gradient(520px circle at var(--sx,18%) var(--sy,-8%),rgb(255 255 255 / .15),transparent 62%),linear-gradient(150deg,rgb(255 255 255 / .1),rgb(255 255 255 / 0) 42%);
+  -webkit-backdrop-filter:blur(34px) saturate(1.7);backdrop-filter:blur(34px) saturate(1.7);
+  box-shadow:inset 0 1px 0 var(--rim),var(--shadow);
+}
+html .glass{box-shadow:inset 0 1px 0 var(--rim),inset 0 0 0 1px var(--edge),var(--shadow-sm)}
+html .neon,html .neon-anim{position:relative;border:0;background-image:radial-gradient(520px circle at var(--sx,18%) var(--sy,-8%),rgb(255 255 255 / .17),transparent 62%),linear-gradient(150deg,rgb(var(--g1) / .14),rgb(var(--g2) / .05) 55%,rgb(255 255 255 / 0))}
+.neon::before,.neon-anim::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(140deg,rgb(255 255 255 / .6),rgb(255 255 255 / .06) 42%,rgb(var(--g2) / .4));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.neon-anim::before{background:conic-gradient(from var(--ang),rgb(255 255 255 / .7),rgb(255 255 255 / .05) 25%,rgb(var(--g3) / .5) 50%,rgb(255 255 255 / .05) 75%,rgb(255 255 255 / .7));animation:spinAng 14s linear infinite}
+html .discover-shell aside{box-shadow:none !important}
+html [class*="border-line"]{border-color:var(--edge)}
+html [class*="divide-line"]>*+*{border-color:var(--edge)}
+html .ring-line{--tw-ring-color:var(--edge)}
+
+/* inset surfaces (inputs, rows, tracks) are lighter glass on glass */
+html .bg-s2,html [class*="bg-s2/"]{background-color:var(--fill)}
+html .hover\:bg-s2:hover{background-color:var(--fill-hover)}
+html .bg-s1{background-color:var(--fill-strong)}
+html .bg-line,html [class*="bg-line/"]{background-color:var(--track)}
+html [class*="bg-bg/"]{background-color:var(--well)}
+
+/* ===== Spatial layer: depth planes, lift, gaze, floating dialogs ===== */
+
+/* plane 1 (far): aurora. plane 2 (mid): dust. plane 3 (near): ornaments.
+   All shift with the pointer at different rates. */
+.dust{position:fixed;inset:-2vmax;z-index:0;pointer-events:none;opacity:.55;background-size:380px 380px;
+  background-image:radial-gradient(1.5px 1.5px at 18% 28%,rgb(var(--tx) / .7),transparent 60%),radial-gradient(1px 1px at 72% 18%,rgb(var(--tx) / .6),transparent 60%),radial-gradient(2px 2px at 86% 74%,rgb(var(--tx) / .5),transparent 60%),radial-gradient(1px 1px at 34% 86%,rgb(var(--tx) / .6),transparent 60%),radial-gradient(1.5px 1.5px at 56% 54%,rgb(var(--tx) / .45),transparent 60%);
+  transform:translate3d(calc(var(--px,0) * 16px),calc(var(--py,0) * 12px),0);transition:transform .35s ease-out}
+:root[data-theme="light"] .dust{opacity:.28}
+html aside[aria-label="Primary"]{translate:calc(var(--px,0) * 10px) calc(var(--py,0) * 8px);transition:width .3s ease-out,translate .4s ease-out}
+html header.sticky{translate:calc(var(--px,0) * 5px) calc(var(--py,0) * 4px);transition:translate .4s ease-out}
+html nav.fixed{translate:calc(var(--px,0) * 6px) calc(var(--py,0) * 5px);transition:translate .4s ease-out}
+
+/* windows: every Card leans toward the pointer and lifts off the surface */
+.depth{transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+.depth:hover{transform:perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translate3d(0,-4px,0);box-shadow:inset 0 1px 0 var(--rim),0 56px 90px -34px rgb(var(--g1) / .42),var(--shadow)}
+.depth:focus-within{transform:none}
+
+/* gaze: pill controls swell and glow under the pointer, and press back into the glass */
+html button[class*="rounded-full"]:not(:disabled):not([role="tab"]){transition:transform .22s cubic-bezier(.2,.8,.2,1),background-color .2s,box-shadow .2s,color .2s,filter .2s}
+html button[class*="rounded-full"]:not(:disabled):not([role="tab"]):hover{transform:translateY(-1px) scale(1.035);box-shadow:inset 0 1px 0 var(--rim),0 14px 26px -12px rgb(var(--g1) / .75)}
+html button[class*="rounded-full"]:not(:disabled):not([role="tab"]):active{transform:scale(.96);box-shadow:inset 0 2px 6px var(--inset)}
+
+/* fields are recessed wells that light up on focus */
+html input:not([type=range]):not([type=checkbox]):not([type=radio]):not(.bg-transparent),html select:not(.bg-transparent),html textarea{box-shadow:inset 0 2px 7px var(--inset),inset 0 1px 0 rgb(255 255 255 / .05);transition:background-color .2s,box-shadow .25s}
+html input:not([type=range]):not([type=checkbox]):not([type=radio]):not(.bg-transparent):focus,html select:not(.bg-transparent):focus,html textarea:focus{background-color:var(--fill-hover);box-shadow:inset 0 1px 0 var(--rim),0 0 0 3px rgb(var(--pri) / .3),0 16px 30px -14px rgb(var(--pri) / .65)}
+
+/* dialogs float toward you; the scene behind steps back */
+[role="dialog"] .neon,[role="dialog"].glass{box-shadow:inset 0 1px 0 var(--rim),0 90px 130px -44px rgb(0 0 0 / .85),0 0 0 1px var(--edge)}
+[role="dialog"] .pop-in,[role="dialog"].pop-in{animation:floatIn .55s cubic-bezier(.2,.9,.25,1.05)}
+@keyframes floatIn{from{opacity:0;transform:perspective(1100px) translate3d(0,30px,-140px) rotateX(10deg)}to{opacity:1;transform:none}}
+body:has([aria-modal="true"]) :is(header.sticky,aside[aria-label="Primary"],nav.fixed,main:not(:has([aria-modal="true"]))){scale:.97;filter:blur(3px) brightness(.8);transition:scale .45s cubic-bezier(.2,.8,.2,1),filter .45s}
+
+@media (prefers-reduced-motion:reduce){
+  .dust{transform:none !important}
+  html aside[aria-label="Primary"],html header.sticky,html nav.fixed{translate:none !important}
+  .depth:hover{transform:none !important}
+  body:has([aria-modal="true"]) :is(header.sticky,aside[aria-label="Primary"],nav.fixed,main){scale:none !important}
+}
+
+/* ===== Motion that answers an action ===== */
+@keyframes shimmer{to{background-position:200% center}}
+@keyframes sheen{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
+@keyframes marquee{to{transform:translateX(-50%)}}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 rgb(var(--ok) / .6)}70%,100%{box-shadow:0 0 0 8px rgb(var(--ok) / 0)}}
+@property --ang{syntax:"<angle>";inherits:false;initial-value:0deg}
+@keyframes spinAng{to{--ang:360deg}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes pulseRing{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.9);opacity:0}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+@keyframes scan{0%{top:0}100%{top:calc(100% - 2px)}}
+@keyframes burst{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:0}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgb(var(--ok) / .5)}50%{box-shadow:0 0 0 8px rgb(var(--ok) / 0)}}
+@keyframes splash{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.92);opacity:.7}}
+.pop-in{animation:pop .28s cubic-bezier(.2,.8,.2,1)}
+.shake{animation:shake .4s ease-in-out}
+.scan-line{position:absolute;left:0;right:0;height:2px;background:rgb(var(--pri));box-shadow:0 0 12px rgb(var(--pri));animation:scan .55s ease-in-out infinite alternate}
+.burst-p{position:absolute;border-radius:2px;animation:burst 1.5s cubic-bezier(.2,.7,.3,1) forwards}
+.ready-glow{animation:glow 1.6s ease-in-out infinite}
+.splash{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#9aa6d8;font-family:system-ui,sans-serif;text-align:center;padding:24px}
+.splash svg{animation:splash 1.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+  .burst-p{display:none}
+  .marquee{overflow-x:auto;-webkit-mask-image:none;mask-image:none}
+  .marquee-track>[aria-hidden="true"]{display:none}
+  .tilt{transform:none !important}
+}
+
+/* ===== Lighting pass: the glass sheen is a cool blue-white highlight, not a flat
+   white wash; text and placeholders stay readable on the tinted glass ===== */
+.aurora i{filter:blur(60px)}
+.aurora i:nth-child(1){--c:#3f6dff}
+.aurora i:nth-child(2){--c:#a35cff}
+.aurora i:nth-child(3){--c:#12cdb8}
+
+:root[data-theme="dark"] [class*="bg-s1/"],
+:root[data-theme="dark"] .glass,
+:root[data-theme="dark"] .win,
+:root[data-theme="dark"] .neon,
+:root[data-theme="dark"] .neon-anim{
+  background-image:
+    radial-gradient(520px circle at var(--sx,18%) var(--sy,-8%), rgb(150 190 255 / .20), transparent 62%),
+    linear-gradient(160deg, rgb(120 150 255 / .14), rgb(120 150 255 / 0) 46%),
+    linear-gradient(0deg, rgb(2 4 24 / .22), rgb(2 4 24 / 0) 40%);
+  -webkit-backdrop-filter:blur(30px) saturate(1.9) brightness(1.05);
+  backdrop-filter:blur(30px) saturate(1.9) brightness(1.05);
+}
+:root[data-theme="dark"] .neon,
+:root[data-theme="dark"] .neon-anim{
+  background-image:
+    radial-gradient(520px circle at var(--sx,18%) var(--sy,-8%), rgb(150 190 255 / .22), transparent 62%),
+    linear-gradient(150deg, rgb(var(--g1) / .20), rgb(var(--g2) / .10) 55%, rgb(255 255 255 / 0));
+}
+
+html input[class]::placeholder, html textarea[class]::placeholder{color:rgb(var(--mu) / .78)}
+:root[data-theme="dark"] .scroll-thin::-webkit-scrollbar-thumb{background:rgb(180 200 255 / .34)}

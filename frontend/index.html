@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#080916" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <title>CollabSphere | IITM BS Cross-House &amp; Regional Meetup Engine</title>
+
+  <script>
+    // Apply the saved theme before first paint so there is no flash.
+    try { if (JSON.parse(localStorage.getItem("collabsphere_v3_theme")) === "light") document.documentElement.setAttribute("data-theme", "light"); } catch (e) {}
+  </script>
+
+  <!-- Fonts: Figtree (headings), Figtree (body), JetBrains Mono (hashes and codes) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;800&text=%E4%B9%9B%E5%8D%A9%E3%83%A0ND%E3%83%A0&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
+
+  <!--
+    Leaflet, three.js and qrcode-generator stay on CDNs: the intro overlay and the
+    ambient backdrop use their globals (L, THREE, qrcode) directly, exactly as in the
+    original file. React and Tailwind are bundled (see vite.config.js / tailwind.config.js).
+  -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+
+  <!-- Intro overlay styles, loaded before the body so there is no flash -->
+  <link rel="stylesheet" href="/src/styles/intro.css" />
+</head>
+<body>
+<!-- ===== Intro: globe hero, scroll to the horizon carousel ===== -->
+<div id="cs-intro" role="region" aria-label="CollabSphere intro">
+  <div class="bg" aria-hidden="true">
+    <i style="width:60vmax;height:60vmax;left:-20vmax;top:-26vmax;background:#4a74ff"></i>
+    <i style="width:52vmax;height:52vmax;right:-18vmax;top:-10vmax;background:#9a4dff;animation-delay:-9s"></i>
+    <i style="width:46vmax;height:46vmax;left:20vmax;bottom:-30vmax;background:#17c3b2;opacity:.35;animation-delay:-15s"></i>
+  </div>
+  <canvas aria-hidden="true"></canvas>
+  <nav>
+    <div class="lg"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="12" cy="16" r="9" fill="#22b8a0" opacity=".9"/><circle cx="20" cy="16" r="9" fill="#8a7dff" opacity=".9"/></svg>CollabSphere</div>
+    <div class="lk"><button data-k="1">Home</button><button data-k="2">Discover</button><button data-k="3">Host</button><button data-k="4">Check in</button><button data-k="5">Ledger</button></div>
+    <button class="b g" data-k="1">Enter app</button>
+  </nav>
+  <div class="hero">
+    <span class="eb"><i></i>IITM BS &middot; Cross-house meetup engine</span>
+    <h1 aria-label="Lets collab"><canvas id="wr-c" width="2960" height="835" role="img" aria-label="Lets collab"></canvas></h1>
+    <p>Find cross-house and regional meetups on a live map, check in at the venue, and watch your house climb a tamper-evident ledger.</p>
+    <div class="row"><button class="b p" data-k="2">Explore the map &rarr;</button><button class="b g" data-go="1">See how it works</button></div>
+  </div>
+  <div class="stats"><div><b>9</b><span>Houses</span></div><div><b>3</b><span>Meetup types</span></div><div><b>GPS</b><span>Verified check-ins</span></div></div>
+  <div class="au-card mode-in" id="za" role="region" aria-label="Log in or sign up">
+    <span class="eb"><i></i>Welcome to CollabSphere</span>
+    <h3>Welcome <em>back</em></h3>
+    <p class="sub">Log in with your IITM BS roll number to pick up where you left off.</p>
+    <div class="tabs"><button type="button" data-t="in" class="on">Log in</button><button type="button" data-t="up">Sign up</button></div>
+    <form id="zf" novalidate>
+      <label class="f up"><span>Full name</span><input name="fn" autocomplete="name" placeholder="Your full name" /></label>
+      <label class="f"><span>Roll number</span><input name="roll" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="24f200142" /></label>
+      <label class="f up"><span>House</span><select name="house"><option value="">Choose your house</option><option>Saranda</option><option>Gir</option><option>Kanha</option><option>Bandipur</option><option>Corbett</option><option>Namdapha</option><option>Pichavaram</option><option>Wayanad</option><option>Kaziranga</option></select></label>
+      <label class="f"><span>Password</span><div class="pw"><input name="pw" type="password" autocomplete="current-password" placeholder="At least 6 characters" /><button type="button" data-eye>Show</button></div></label>
+      <div class="err" id="ze" role="alert"></div>
+      <button class="b p wide" type="submit" id="zsub">Log in &rarr;</button>
+    </form>
+    <div class="alt"><button type="button" data-back>&larr; Back</button><button type="button" data-guest>Continue as guest</button></div>
+    <small class="note">Demo credentials: <strong>24f200142</strong> / <strong>collabsphere-demo</strong> (or click "Continue as guest") &bull; Admin: <strong>Demo@2026</strong></small>
+  </div>
+  <div class="spec" id="zs"><h4>Network specs</h4>
+    <p><span>Active cities</span><b>4</b></p><p><span>Houses</span><b>9</b></p><p><span>Meetup types</span><b>3</b></p>
+    <p><span>Check-in proof</span><b>Code &middot; 150 m &middot; photo</b></p><p><span>XP per event</span><b>10&ndash;100</b></p>
+    <p><span>Levels</span><b>5 &middot; Newcomer&rarr;Ranger</b></p><p><span>Ledger</span><b>SHA hash chain</b></p></div>
+  <div class="spec" id="zr" style="width:224px"><h4>Live readout</h4>
+    <p><span>Cursor</span><b id="zc">&mdash;</b></p><p><span>India time</span><b id="zt">--:--:--</b></p>
+    <p><span>Nodes &middot; routes</span><b>15 &middot; 16</b></p><p><span>Surface</span><b id="zl">Stylised map</b></p></div>
+  <div class="hud"><span style="color:#fff"><i></i>Active city</span><span style="color:#8a94bd"><i></i>Planned</span><span style="color:#8fd0ff"><i></i>Live route</span><span style="color:#ffcf6b"><i></i>You &middot; Kanpur 26.45&deg;N 80.35&deg;E</span></div>
+  <div class="s2">
+    <h2>Connect beyond houses</h2>
+    <p>Pick where to start. Every path ends in verified attendance and XP for each host house.</p>
+    <div class="car"></div>
+    <div class="bot"><button class="b g" data-go="0">&uarr; Back</button><button class="b p" data-k="1">Enter CollabSphere &rarr;</button></div>
+  </div>
+</div>
+
+  <div id="root">
+    <div class="splash">
+      <svg width="44" height="44" viewBox="0 0 32 32"><circle cx="12" cy="16" r="9" fill="#22b8a0"/><circle cx="20" cy="16" r="9" fill="#8a7dff"/></svg>
+      <div style="font-weight:600;color:#e8efe9">Loading CollabSphere</div>
+      <div id="splash-note" style="font-size:13px;max-width:340px">Needs an internet connection for React, Tailwind and the map.</div>
+    </div>
+  </div>
+
+  <script>
+    setTimeout(function () {
+      var n = document.getElementById("splash-note");
+      if (n) n.textContent = "This is taking a while. Check your connection: the map, three.js and the QR library load from CDNs.";
+    }, 9000);
+  </script>
+
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>

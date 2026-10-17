@@ -1,0 +1,45 @@
+/* ===== Design tokens =====
+   Every colour in the app is a CSS variable so a theme swap is a single
+   [data-theme] attribute on <html>. Tailwind maps these in src/config/tailwind-theme.js. */
+
+:root{
+  --bg:9 11 26; --s1:30 34 64; --s2:70 78 130; --line:150 160 215; --tx:246 248 255; --mu:178 188 226;
+  --pri:104 168 255; --pritx:166 208 255; --priink:5 16 40; --ok:86 226 168; --bad:255 107 129; --info:110 200 255;
+  --g1:104 168 255; --g2:170 120 255; --g3:120 220 255;
+  --glass:rgb(255 255 255 / .075); --fill:rgb(255 255 255 / .085); --fill-hover:rgb(255 255 255 / .16); --fill-strong:rgb(255 255 255 / .22);
+  --track:rgb(255 255 255 / .14); --well:rgb(0 0 0 / .26); --edge:rgb(255 255 255 / .16); --rim:rgb(255 255 255 / .4);
+  --shadow:0 34px 70px -30px rgb(0 0 0 / .75), 0 10px 24px -12px rgb(0 0 0 / .45);
+  --shadow-sm:0 18px 40px -18px rgb(0 0 0 / .6);
+  --orb:.4; color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:222 229 248; --s1:255 255 255; --s2:225 232 252; --line:120 135 200; --tx:18 22 48; --mu:78 88 130;
+  --pri:76 146 255; --pritx:0 82 196; --priink:5 16 40; --ok:10 130 88; --bad:214 40 76; --info:20 100 180;
+  --glass:rgb(255 255 255 / .72); --fill:rgb(25 40 110 / .06); --fill-hover:rgb(25 40 110 / .12); --fill-strong:rgb(255 255 255 / .92);
+  --track:rgb(25 40 110 / .12); --well:rgb(255 255 255 / .55); --edge:rgb(25 40 110 / .12); --rim:rgb(255 255 255 / .95);
+  --shadow:0 30px 60px -30px rgb(40 60 140 / .4), 0 8px 20px -10px rgb(40 60 140 / .2);
+  --shadow-sm:0 16px 34px -16px rgb(40 60 140 / .35);
+  --orb:.55; color-scheme:light;
+}
+
+/* recessed-surface shadow used by inputs and pressed pill buttons */
+:root{--inset:rgb(0 0 0 / .24)}
+:root[data-theme="light"]{--inset:rgb(25 40 110 / .14)}
+
+/* ===== Lighting pass: clearer light sources, tinted glass instead of grey haze,
+   brighter text, richer map ===== */
+:root[data-theme="dark"]{
+  --bg:6 9 28; --s1:24 31 78; --s2:70 82 160;
+  --mu:200 209 242; --pritx:178 216 255;
+  --glass:rgb(32 42 108 / .50);
+  --fill:rgb(150 172 255 / .11); --fill-hover:rgb(150 172 255 / .20); --fill-strong:rgb(58 72 150 / .58);
+  --track:rgb(150 172 255 / .20); --well:rgb(3 5 22 / .40);
+  --edge:rgb(172 192 255 / .24); --rim:rgb(205 220 255 / .55);
+  --inset:rgb(2 4 20 / .38);
+  --shadow:0 34px 70px -30px rgb(2 4 24 / .85), 0 10px 24px -12px rgb(40 70 200 / .28);
+  --orb:.85;
+}
+:root[data-theme="light"]{
+  --bg:214 224 250; --glass:rgb(255 255 255 / .78); --mu:64 76 120;
+  --orb:.7;
+}

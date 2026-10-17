@@ -1,0 +1,18 @@
+{
+  "name": "@collabsphere/backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Express + SQLite backend skeleton. Mirrors the client's shared domain rules.",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --env-file-if-exists=../.env --watch src/server.js",
+    "start": "node --env-file-if-exists=../.env src/server.js",
+    "test": "node test/api.test.mjs"
+  },
+  "dependencies": {
+    "@collabsphere/shared": "*",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

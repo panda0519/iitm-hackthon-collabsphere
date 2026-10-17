@@ -1,0 +1,24 @@
+{
+  "name": "collabsphere",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CollabSphere - IITM BS cross-house & regional meetup engine",
+  "workspaces": [
+    "shared",
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace frontend",
+    "dev:offline": "npm run dev --workspace frontend -- --mode offline",
+    "dev:api": "npm run dev --workspace backend",
+    "build": "npm run build --workspace frontend",
+    "preview": "npm run preview --workspace frontend",
+    "start": "npm run start --workspace backend",
+    "test": "npm run test --workspace backend",
+    "format": "prettier --write ."
+  },
+  "engines": {
+    "node": ">=22.5"
+  }
+}

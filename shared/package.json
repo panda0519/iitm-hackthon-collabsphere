@@ -1,0 +1,25 @@
+{
+  "name": "@collabsphere/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Pure, framework-free domain logic shared by the frontend and the backend.",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./constants": "./src/constants.js",
+    "./geo": "./src/geo.js",
+    "./hash": "./src/hash.js",
+    "./totp": "./src/totp.js",
+    "./ledger": "./src/ledger.js",
+    "./dates": "./src/dates.js",
+    "./events": "./src/events.js",
+    "./leaderboard": "./src/leaderboard.js",
+    "./csv": "./src/csv.js"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test"
+  }
+}
